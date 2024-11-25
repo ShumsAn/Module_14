@@ -3,7 +3,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State,StatesGroup
 from aiogram.types import ReplyKeyboardMarkup,KeyboardButton
 from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton
-from crud_functions import initiate_db,get_all_products,add_product
+from crud_functions import *
 
 
 api = ''
@@ -22,7 +22,7 @@ db = initiate_db()
 #Добавляем продукты
 products = {1: 'Product1', 2: 'Product2', 3: 'Product3', 4: 'Product4'}
 for key,value in products.items():
-    add_product(value,f'Описание{key}',key*100)
+    add_product(value, f'Описание{key}', key * 100)
 #Cохраняем в переменную все продукты
 db_result = get_all_products()
 
@@ -53,7 +53,8 @@ async def start_message(message):
 @dp.message_handler(text = 'Купить')
 async def get_buying_list(message):
     for product in db_result:
-        with open('product_image.jpg', 'rb') as img:
+        #Открываем изображения продуктов product_image1.jpg ...2...3...4
+        with open(f'product_image{product[0]}.jpg', 'rb') as img:
             await message.answer(f'Название:{product[1]} | Описание:{product[2]} | Цена:{product[3]}')
             await message.answer_photo(img)
     await message.answer('Выберите продукт для покупки:', reply_markup=kb_buy)
